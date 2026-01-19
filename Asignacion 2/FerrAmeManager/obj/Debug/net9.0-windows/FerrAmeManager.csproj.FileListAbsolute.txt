@@ -80,3 +80,6 @@ C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas
 C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\bin\Debug\net9.0-windows\runtimes\win\lib\net9.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\obj\Debug\net9.0-windows\FerrAmeManager.csproj.AssemblyReference.cache
 C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\obj\Debug\net9.0-windows\FerrAmeM.BE484774.Up2Date
+C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\bin\Debug\net9.0-windows\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll
+C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\bin\Debug\net9.0-windows\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll
+C:\Users\darwi\Desktop\Escritorio en el Escritorio\PROGRAMACION\Proyectos\Tareas_ISO810\Asignacion 2\FerrAmeManager\bin\Debug\net9.0-windows\es\Microsoft.Data.Tools.Schema.Sql.UnitTesting.resources.dll

@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace FerrAmeManager
@@ -19,6 +20,85 @@ namespace FerrAmeManager
             {
                 MessageBox.Show("Por favor, seleccione una ruta para guardar el archivo.");
                 return;
+            }
+
+            if (string.IsNullOrEmpty(textLabelRnc.Text))
+            {
+                MessageBox.Show("Por favor, ingrese un RNC válido.");
+                return;
+            }
+
+            if (dataGridView1.DataSource == null || dataGridView1.Rows.Count == 0)
+            {
+                MessageBox.Show("No hay empleados en la tabla para generar el archivo. Por favor, realiza la carga primero.", "Tabla Vacía", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+
+                int cantidadRegistros = 0;
+
+                // Recorremos la grilla para sumar los salarios
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (!row.IsNewRow && row.Cells["Salario"].Value != null)
+                    {
+                        decimal salarioFila;
+                        if (decimal.TryParse(row.Cells["Salario"].Value.ToString(), out salarioFila))
+                        {
+                            cantidadRegistros++;
+                        }
+                    }
+                }
+
+                // Generar Archivo
+
+                using (StreamWriter writer = new StreamWriter(selectedFilePath))
+                {
+                    string rncEmpresa = textLabelRnc.Text;
+                    string fecha = DateTime.Now.ToString("ddMMyyyy");
+                    string hora = DateTime.Now.ToString("HHmmss");
+                    string fechaFormateada = dateTimePicker1.Value.ToString("yyyyMM");
+
+
+
+                    string lineaEncabezado = $"E {rncEmpresa} {fecha} {fechaFormateada}";
+
+                    writer.WriteLine(lineaEncabezado);
+
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            // Obtenemos los valores de las celdas de manera segura
+                            string cedula = row.Cells["Cedula"].Value?.ToString() ?? "";
+                            string salario = row.Cells["Salario"].Value?.ToString() ?? "0.00";
+                            string tipo = row.Cells["TipoEmpleado"].Value?.ToString() ?? "";
+                            string cargo = row.Cells["Cargo"].Value?.ToString() ?? "";
+
+                            string fechaIngreso = "";
+                            var valorFecha = row.Cells["FechaIngreso"].Value;
+                            if (DateTime.TryParse(valorFecha?.ToString(), out DateTime fechaDt))
+                            {
+                                fechaIngreso = fechaDt.ToString("ddMMyyyy");
+                            }
+
+                            string lineaDetalle = $"D {cedula} {salario} {fechaIngreso} {tipo} {cargo}";
+
+                            writer.WriteLine(lineaDetalle);
+                        }
+                    }
+
+                    String lineaSumario = $"S {cantidadRegistros}";  
+                    writer.WriteLine(lineaSumario);
+                }
+
+                MessageBox.Show($"Archivo generado exitosamente en:\n{selectedFilePath}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al escribir el archivo: {ex.Message}", "Error Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
 
@@ -93,27 +173,77 @@ namespace FerrAmeManager
 
         private void button4_Click(object sender, EventArgs e)
         {
-            String rnc = textLabelRnc.Text;
+            string rnc = textLabelRnc.Text.Trim();
 
-            if (rnc.Length != 9)
+            // Validación del RNC
+            if (rnc.Length != 9 || !rnc.All(char.IsDigit))
             {
-                MessageBox.Show("El RNC debe tener 9 dígitos.");
-
+                MessageBox.Show("El RNC debe tener exactamente 9 dígitos numéricos.");
+                return; // Cortamos ejecución si no es válido
             }
 
-            for (int i = 0; i < rnc.Length; i++)
+            int empresaId = -1;
+            string nombreEmpresa = "";
+
+            string queryEmpresa = "SELECT Nombre, Id FROM Empresas WHERE RNC = @RNC";
+            string queryEmpleados = "SELECT Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo FROM Empleados WHERE EmpresaId = @EmpresaId";
+
+            using (SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Tss;Integrated Security=True"))
             {
-                if (!char.IsDigit(rnc[i]))
+                con.Open();
+
+                // Buscar la Empresa
+                using (SqlCommand cmd = new SqlCommand(queryEmpresa, con))
                 {
-                    MessageBox.Show("El RNC solo debe contener números.");
-                    break;
+                    cmd.Parameters.Add("@RNC", SqlDbType.VarChar, 9).Value = rnc;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            nombreEmpresa = reader.GetString(0);
+                            empresaId = reader.GetInt32(1);
+
+                            label2.Text = $"Colaboradores registrados de {nombreEmpresa}:";
+                        }
+                    }
+                }
+
+                if (empresaId != -1)
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(queryEmpleados, con))
+                    {
+                        adapter.SelectCommand.Parameters.Add("@EmpresaId", SqlDbType.Int).Value = empresaId;
+
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+
+                        if (dt.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Esta empresa existe, pero aún no tiene empleados registrados.");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró ninguna empresa con ese RNC.");
+                    dataGridView1.DataSource = null;
                 }
             }
+        }
 
-            query = "SELECT Nombre FROM Empresas WHERE RNC = @RNC";
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 
 }
