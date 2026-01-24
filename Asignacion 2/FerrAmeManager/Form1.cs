@@ -1,13 +1,17 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Text;
 
 namespace FerrAmeManager
 {
     public partial class Form1 : Form
     {
+        private int idEmpresaActual = -1;
+
+        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Tss;Integrated Security=True";
         string selectedFilePath = "";
-        string query = "";
 
         public Form1()
         {
@@ -16,6 +20,7 @@ namespace FerrAmeManager
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // --- VALIDACIONES ---
             if (string.IsNullOrEmpty(selectedFilePath))
             {
                 MessageBox.Show("Por favor, seleccione una ruta para guardar el archivo.");
@@ -30,79 +35,71 @@ namespace FerrAmeManager
 
             if (dataGridView1.DataSource == null || dataGridView1.Rows.Count == 0)
             {
-                MessageBox.Show("No hay empleados en la tabla para generar el archivo. Por favor, realiza la carga primero.", "Tabla Vacía", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No hay empleados para exportar.", "Tabla Vacía", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             try
             {
-
                 int cantidadRegistros = 0;
 
-                // Recorremos la grilla para sumar los salarios
-                foreach (DataGridViewRow row in dataGridView1.Rows)
+                using (StreamWriter writer = new StreamWriter(selectedFilePath, false, new UTF8Encoding(false)))
                 {
-                    if (!row.IsNewRow && row.Cells["Salario"].Value != null)
-                    {
-                        decimal salarioFila;
-                        if (decimal.TryParse(row.Cells["Salario"].Value.ToString(), out salarioFila))
-                        {
-                            cantidadRegistros++;
-                        }
-                    }
-                }
+                    string rncRaw = textLabelRnc.Text.Trim();
+                    string rncFijo = rncRaw.Length > 11 ? rncRaw.Substring(0, 11) : rncRaw.PadLeft(11, '0');
 
-                // Generar Archivo
+                    string fecha = DateTime.Now.ToString("dd/MM/yyyy");
+                    string periodo = dateTimePicker1.Value.ToString("yyyyMM");
 
-                using (StreamWriter writer = new StreamWriter(selectedFilePath))
-                {
-                    string rncEmpresa = textLabelRnc.Text;
-                    string fecha = DateTime.Now.ToString("ddMMyyyy");
-                    string hora = DateTime.Now.ToString("HHmmss");
-                    string fechaFormateada = dateTimePicker1.Value.ToString("yyyyMM");
+                    writer.WriteLine($"E{rncFijo}{fecha}{periodo}");
 
-
-
-                    string lineaEncabezado = $"E {rncEmpresa} {fecha} {fechaFormateada}";
-
-                    writer.WriteLine(lineaEncabezado);
-
+                    // --- 2. DETALLES ---
                     foreach (DataGridViewRow row in dataGridView1.Rows)
                     {
                         if (!row.IsNewRow)
                         {
-                            // Obtenemos los valores de las celdas de manera segura
-                            string cedula = row.Cells["Cedula"].Value?.ToString() ?? "";
-                            string salario = row.Cells["Salario"].Value?.ToString() ?? "0.00";
-                            string tipo = row.Cells["TipoEmpleado"].Value?.ToString() ?? "";
-                            string cargo = row.Cells["Cargo"].Value?.ToString() ?? "";
+                            string cedRaw = row.Cells["Cedula"].Value?.ToString() ?? "";
+                            string cedulaFija = cedRaw.Length > 11 ? cedRaw.Substring(0, 11) : cedRaw.PadLeft(11, '0');
 
-                            string fechaIngreso = "";
-                            var valorFecha = row.Cells["FechaIngreso"].Value;
-                            if (DateTime.TryParse(valorFecha?.ToString(), out DateTime fechaDt))
+                            decimal salVal = 0;
+                            decimal.TryParse(row.Cells["Salario"].Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out salVal);
+                            // formato fijo con 2 decimales, punto como separador
+                            string salStr = salVal.ToString("F2", CultureInfo.InvariantCulture);
+                            string salarioFijo = salStr.Length > 10 ? salStr.Substring(0, 10) : salStr.PadLeft(10, '0'); 
+
+                            string fechaIngFija = "01/01/2000";
+                            if (row.Cells["FechaIngreso"].Value != null &&
+                                DateTime.TryParse(row.Cells["FechaIngreso"].Value.ToString(), out DateTime ft))
                             {
-                                fechaIngreso = fechaDt.ToString("ddMMyyyy");
+                                fechaIngFija = ft.ToString("dd/MM/yyyy");
                             }
 
-                            string lineaDetalle = $"D {cedula} {salario} {fechaIngreso} {tipo} {cargo}";
+                            string tipoRaw = row.Cells["TipoEmpleado"].Value?.ToString() ?? "F";
+                            string tipoFijo = tipoRaw.Length > 0 ? tipoRaw.Substring(0, 1) : "F";
 
-                            writer.WriteLine(lineaDetalle);
+                            string cargoRaw = row.Cells["Cargo"].Value?.ToString() ?? "";
+                            cargoRaw = cargoRaw.Replace("\r", "").Replace("\n", "").Trim();
+                            string cargoFijo = cargoRaw.Length > 40 ? cargoRaw.Substring(0, 40) : cargoRaw.PadRight(40, ' ');
+
+                            // Línea detalle: "D" + cedula(11) + salario(10) + fechaIngreso(10) + tipo(1) + cargo(40)
+                            writer.WriteLine($"D{cedulaFija}{salarioFijo}{fechaIngFija}{tipoFijo}{cargoFijo}");
+
+                            cantidadRegistros++;
                         }
                     }
 
-                    String lineaSumario = $"S {cantidadRegistros}";  
-                    writer.WriteLine(lineaSumario);
+                    // El sumario, según tu layout, debe incluir encabezado y sumario en el conteo total:
+                    int totalRegistrosIncluyendoEYS = cantidadRegistros + 2;
+                    string cantidadFija = totalRegistrosIncluyendoEYS.ToString().PadLeft(10, '0');
+                    writer.WriteLine($"S{cantidadFija}");
                 }
 
                 MessageBox.Show($"Archivo generado exitosamente en:\n{selectedFilePath}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error al escribir el archivo: {ex.Message}", "Error Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al generar archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-
-        }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -171,75 +168,129 @@ namespace FerrAmeManager
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void CargarEmpleados(SqlConnection con)
         {
-            string rnc = textLabelRnc.Text.Trim();
-
-            // Validación del RNC
-            if (rnc.Length != 9 || !rnc.All(char.IsDigit))
-            {
-                MessageBox.Show("El RNC debe tener exactamente 9 dígitos numéricos.");
-                return; // Cortamos ejecución si no es válido
-            }
-
-            int empresaId = -1;
-            string nombreEmpresa = "";
-
-            string queryEmpresa = "SELECT Nombre, Id FROM Empresas WHERE RNC = @RNC";
             string queryEmpleados = "SELECT Id, Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo FROM Empleados WHERE EmpresaId = @EmpresaId";
 
-            using (SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Tss;Integrated Security=True"))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(queryEmpleados, con))
             {
-                con.Open();
+                adapter.SelectCommand.Parameters.Add("@EmpresaId", SqlDbType.Int).Value = idEmpresaActual;
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
 
-                // Buscar la Empresa
-                using (SqlCommand cmd = new SqlCommand(queryEmpresa, con))
+                dataGridView1.DataSource = dt;
+
+                if (dataGridView1.Columns["Id"] != null) dataGridView1.Columns["Id"].Visible = false;
+                if (dataGridView1.Columns["EmpresaId"] != null) dataGridView1.Columns["EmpresaId"].Visible = false;
+            }
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            // 1. Validar empresa seleccionada
+            if (idEmpresaActual == -1)
+            {
+                MessageBox.Show("Primero debe buscar una empresa válida por RNC.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(cBTipoEmpleado.Text))
+            {
+                MessageBox.Show("Seleccione un tipo de empleado.");
+                return;
+            }
+
+            // 2. Obtener valores de los Inputs 
+            string cedula = txtBoxCedulaNuevoEmpleado.Text.Trim();
+            string cargo = txtBoxCargoNuevoEmpleado.Text.Trim();
+
+            char tipo = cBTipoEmpleado.Text.Trim()[0];
+            decimal salario = 0;
+
+
+
+            // 3. Validaciones
+            if (!ValidaCedula(cedula))
+            {
+                MessageBox.Show("La cédula no es válida (Verifique dígitos y formato).");
+                return;
+            }
+
+            if (!decimal.TryParse(txtBoxSalarioNuevoEmpleado.Text, out salario) || salario <= 0)
+            {
+                MessageBox.Show("El salario debe ser un número mayor a 0.");
+                return;
+            }
+
+            // 4. Insertar en Base de Datos
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
                 {
-                    cmd.Parameters.Add("@RNC", SqlDbType.VarChar, 9).Value = rnc;
+                    con.Open();
+                    string queryInsert = @"INSERT INTO Empleados (EmpresaId, Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo) 
+                                   VALUES (@EmpresaId, @Cedula, @Salario, @FechaIngreso, @Tipo, @Cargo)";
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlCommand cmd = new SqlCommand(queryInsert, con))
                     {
-                        if (reader.Read())
-                        {
-                            nombreEmpresa = reader.GetString(0);
-                            empresaId = reader.GetInt32(1);
+                        cmd.Parameters.AddWithValue("@EmpresaId", idEmpresaActual);
+                        cmd.Parameters.AddWithValue("@Cedula", cedula);
+                        cmd.Parameters.AddWithValue("@Salario", salario);
+                        cmd.Parameters.AddWithValue("@FechaIngreso", dTPNuevoEmpleado.Value.Date);
+                        cmd.Parameters.AddWithValue("@Tipo", tipo);
+                        cmd.Parameters.AddWithValue("@Cargo", cargo);
 
-                            label2.Text = $"Colaboradores registrados de {nombreEmpresa}:";
+                        int filasAfectadas = cmd.ExecuteNonQuery();
+
+                        if (filasAfectadas > 0)
+                        {
+                            MessageBox.Show("Empleado registrado correctamente.");
+
+                            // Limpiando campos
+                            txtBoxCedulaNuevoEmpleado.Clear();
+                            txtBoxCargoNuevoEmpleado.Clear();
+                            txtBoxSalarioNuevoEmpleado.Clear();
+                            dTPNuevoEmpleado.Value = DateTime.Now;
+                            cBTipoEmpleado.SelectedIndex = -1;
+
+                            CargarEmpleados(con);
                         }
                     }
                 }
-
-                if (empresaId != -1)
+                catch (Exception ex)
                 {
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(queryEmpleados, con))
-                    {
-                        adapter.SelectCommand.Parameters.Add("@EmpresaId", SqlDbType.Int).Value = empresaId;
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-
-                        dataGridView1.DataSource = dt;
-
-                        // 2. Ocultar la columna ID y hacerla de solo lectura para evitar errores
-                        if (dataGridView1.Columns["Id"] != null)
-                        {
-                            dataGridView1.Columns["Id"].Visible = false;
-                        }
-
-                        // Opcional: Evitar que el usuario agregue filas 
-                        dataGridView1.AllowUserToAddRows = false; 
-
-                        if (dt.Rows.Count == 0)
-                        {
-                            MessageBox.Show("Esta empresa existe, pero aún no tiene empleados registrados.");
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("No se encontró ninguna empresa con ese RNC.");
-                    dataGridView1.DataSource = null;
+                    MessageBox.Show("Error al guardar: " + ex.Message);
                 }
             }
+        }
+
+        public static bool ValidaCedula(string cedula)
+        {
+            if (string.IsNullOrEmpty(cedula)) return false;
+
+            // Eliminar guiones si los tiene
+            string cedulaLimpia = cedula.Replace("-", "").Trim();
+
+            if (cedulaLimpia.Length != 11 || !cedulaLimpia.All(char.IsDigit)) return false;
+
+            int suma = 0;
+            int peso = 1;
+
+            for (int i = 0; i < 10; i++)
+            {
+                int digito = int.Parse(cedulaLimpia[i].ToString());
+                int calculo = digito * peso;
+
+                if (calculo >= 10) calculo = (calculo / 10) + (calculo % 10);
+
+                suma += calculo;
+                peso = (peso == 1) ? 2 : 1;
+            }
+
+            int verificadorCalculado = (10 - (suma % 10)) % 10;
+            int digitoVerificadorReal = int.Parse(cedulaLimpia[10].ToString());
+
+            return verificadorCalculado == digitoVerificadorReal;
         }
 
 
@@ -252,6 +303,244 @@ namespace FerrAmeManager
         {
 
         }
+
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            string rnc = textLabelRnc.Text.Trim();
+
+            if (rnc.Length != 9 || !rnc.All(char.IsDigit))
+            {
+                MessageBox.Show("El RNC debe tener exactamente 9 dígitos numéricos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    con.Open();
+                    string queryEmpresa = "SELECT Id, Nombre FROM Empresas WHERE RNC = @RNC";
+
+                    // Variable para controlar si encontramos o no la empresa
+                    bool encontrada = false;
+
+                    using (SqlCommand cmd = new SqlCommand(queryEmpresa, con))
+                    {
+                        cmd.Parameters.Add("@RNC", SqlDbType.VarChar, 9).Value = rnc;
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                idEmpresaActual = reader.GetInt32(0);
+                                string nombreEmpresa = reader.GetString(1);
+
+                                label2.Text = $"Empresa: {nombreEmpresa}";
+                                MessageBox.Show($"Empresa encontrada: {nombreEmpresa}. Puede registrar empleados.");
+                                encontrada = true;
+                            }
+                        } // El Reader se cierra aquí automáticamente
+                    }
+
+                    if (encontrada)
+                    {
+                        CargarEmpleados(con);
+                    }
+                    else
+                    {
+
+                        DialogResult result = MessageBox.Show(
+                            "El RNC no existe. ¿Desea registrar esta nueva empresa?",
+                            "Empresa no encontrada",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            string nombreNuevaEmpresa = ShowInputDialog("Ingrese el Nombre de la Empresa:", "Nueva Empresa");
+
+                            if (!string.IsNullOrWhiteSpace(nombreNuevaEmpresa))
+                            {
+                                string queryInsert = "INSERT INTO Empresas (Nombre, RNC) VALUES (@Nombre, @RNC); SELECT CAST(scope_identity() AS int)";
+
+                                using (SqlCommand cmdInsert = new SqlCommand(queryInsert, con))
+                                {
+                                    cmdInsert.Parameters.AddWithValue("@Nombre", nombreNuevaEmpresa);
+                                    cmdInsert.Parameters.AddWithValue("@RNC", rnc);
+
+                                    int newId = (int)cmdInsert.ExecuteScalar();
+
+                                    idEmpresaActual = newId;
+                                    label2.Text = $"Empresa: {nombreNuevaEmpresa}";
+
+                                    dataGridView1.DataSource = null;
+
+                                    MessageBox.Show("Empresa registrada exitosamente. Ahora puede agregar empleados.");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Operación cancelada. Debe ingresar un nombre.");
+                            }
+                        }
+                        else
+                        {
+                            idEmpresaActual = -1;
+                            label2.Text = "Empresa no encontrada";
+                            dataGridView1.DataSource = null;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+       
+       
+        private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnActualizarTabla_Click(object sender, EventArgs e)
+        {
+            GuardarCambiosDelGrid();
+            MessageBox.Show("Datos de la tabla actualizados correctamente.");
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                CargarEmpleados(con);
+            }
+        }
+
+        private void GuardarCambiosDelGrid()
+        {
+            if (dataGridView1.Rows.Count == 0) return;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    con.Open();
+
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (row.IsNewRow) continue;
+
+                        if (row.Cells["Id"].Value == null) continue;
+                        int idEmpleado = Convert.ToInt32(row.Cells["Id"].Value);
+
+                        string queryUpdate = @"UPDATE Empleados 
+                                       SET Cedula = @Cedula, 
+                                           Salario = @Salario, 
+                                           TipoEmpleado = @Tipo, 
+                                           Cargo = @Cargo,
+                                           FechaIngreso = @FechaIngreso
+                                       WHERE Id = @Id";
+
+                        using (SqlCommand cmd = new SqlCommand(queryUpdate, con))
+                        {
+                            cmd.Parameters.AddWithValue("@Id", idEmpleado);
+
+                            cmd.Parameters.AddWithValue("@Cedula", row.Cells["Cedula"].Value?.ToString() ?? "");
+
+                            decimal salario = 0;
+
+                            decimal.TryParse(row.Cells["Salario"].Value?.ToString(), out salario);
+                            cmd.Parameters.AddWithValue("@Salario", salario);
+
+                            DateTime fechaIng = DateTime.Now;
+                            if (row.Cells["FechaIngreso"].Value != null)
+                            {
+                                DateTime.TryParse(row.Cells["FechaIngreso"].Value.ToString(), out fechaIng);
+                            }
+                            cmd.Parameters.AddWithValue("@FechaIngreso", fechaIng);
+
+                            cmd.Parameters.AddWithValue("@Tipo", row.Cells["TipoEmpleado"].Value?.ToString() ?? "");
+                            cmd.Parameters.AddWithValue("@Cargo", row.Cells["Cargo"].Value?.ToString() ?? "");
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al actualizar la tabla: " + ex.Message);
+                }
+            }
+        }
+
+        private static string ShowInputDialog(string text, string caption)
+        {
+            Form prompt = new Form()
+            {
+                Width = 500,
+                Height = 180,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = caption,
+                StartPosition = FormStartPosition.CenterScreen,
+                MinimizeBox = false,
+                MaximizeBox = false
+            };
+
+            Label textLabel = new Label() { Left = 20, Top = 20, Text = text, Width = 400 };
+            TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 440 };
+            Button confirmation = new Button() { Text = "Guardar", Left = 360, Width = 100, Top = 90, DialogResult = DialogResult.OK };
+
+            // Para que al dar Enter se presione el botón
+            prompt.AcceptButton = confirmation;
+
+            prompt.Controls.Add(textLabel);
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+
+            return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
+        }
     }
+    
 
 }
