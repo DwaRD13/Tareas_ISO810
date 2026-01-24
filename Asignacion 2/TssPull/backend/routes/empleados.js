@@ -137,7 +137,7 @@ router.get("/generar-archivo", async (req, res) => {
       contenido += `D ${cedula} ${sueldo} ${descuento} ${sueldoNeto} ${fechaNac} ${sexo} ${posicion}\n`;
     });
 
-    contenido += `S ${result.rows.length}\n`;
+    contenido += `S ${result.recordset.length}\n`;
 
     const fileName = `empleados_procesados_${Date.now()}.txt`;
     const filePath = path.join(__dirname, "../uploads", fileName);
