@@ -353,8 +353,7 @@
               <thead>
                 <tr>
                   <th>Cédula</th>
-                  <th>Nombre</th>
-                  <th>Cuenta Banco</th>
+                  <th>Cargo</th>
                   <th class="text-right">Sueldo</th>
                   <th class="text-right">Descuento (3.04%)</th>
                   <th class="text-right">Sueldo Neto</th>
@@ -365,7 +364,6 @@
                     <tr class="hover">
                       <td class="font-mono">{{ empleado.cedula }}</td>
                       <td class="font-semibold">{{ empleado.nombre }}</td>
-                      <td class="font-mono">{{ empleado.cuenta_banco }}</td>
                       <td class="text-right font-mono">{{ empleado.sueldo | currency }}</td>
                       <td class="text-right font-mono text-warning">{{ empleado.descuento_seguro | currency }}</td>
                       <td class="text-right font-mono text-success font-bold">{{ empleado.sueldo_neto | currency }}</td>

@@ -7,7 +7,7 @@ const { connectDB, query } = require("../config/database");
 
 const upload = multer({ dest: "uploads/" });
 
-const PORCENTAJE_SEGURO = 0.0304; // 3.04% del sueldo
+const PORCENTAJE_SEGURO = 0.0304;
 
 function parsearLayoutTXT(contenido) {
   const lineas = contenido.split("\n").filter((linea) => linea.trim() !== "");
@@ -15,34 +15,44 @@ function parsearLayoutTXT(contenido) {
   let encabezado = null;
 
   for (const linea of lineas) {
-    const tipo = linea.charAt(0);
+    if (linea.length < 5) continue;
 
+    const tipo = linea.substring(0, 1); 
     if (tipo === "E") {
+
       encabezado = {
         tipo: "E",
-        numeroControl: linea.substring(2, 11).trim(),
-        fechaProceso: linea.substring(12, 20).trim(),
-        periodo: linea.substring(21, 27).trim(),
+        numeroControl: linea.substring(1, 12).trim(),
+        fechaProceso: linea.substring(12, 22).trim(),
+        periodo: linea.substring(22, 28).trim(),
       };
     } else if (tipo === "D") {
-      const cedula = linea.substring(2, 13).trim();
-      const sueldo = parseFloat(linea.substring(14, 22).trim());
-      const fechaNacimiento = linea.substring(23, 31).trim();
-      const sexo = linea.substring(32, 33).trim();
-      const posicion = linea.substring(34).trim();
+      const cedula = linea.substring(1, 12);
+      const sueldo = linea.substring(12, 22);
+      const fechaIngreso = linea.substring(22, 32);
+      const tipoEmpleado = linea.substring(32, 33);
+      const cargo = linea.substring(33, 73);
+
+      if (isNaN(sueldo)) continue;
 
       const descuentoSeguro = sueldo * PORCENTAJE_SEGURO;
       const sueldoNeto = sueldo - descuentoSeguro;
 
+      let fechaSQL = null;
+      if (fechaIngreso.length === 10) {
+        const [dia, mes, anio] = fechaIngreso.split("/");
+        fechaSQL = `${anio}-${mes}-${dia}`;
+      }
+
       empleados.push({
         cedula,
-        nombre: posicion,
+        nombre: cargo,
         cuentaBanco: cedula,
         sueldo,
         descuentoSeguro,
         sueldoNeto,
-        fechaNacimiento,
-        sexo,
+        fechaNacimiento: "1990-01-01",
+        sexo: "F",
       });
     }
   }
