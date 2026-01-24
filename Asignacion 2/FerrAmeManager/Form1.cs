@@ -186,7 +186,7 @@ namespace FerrAmeManager
             string nombreEmpresa = "";
 
             string queryEmpresa = "SELECT Nombre, Id FROM Empresas WHERE RNC = @RNC";
-            string queryEmpleados = "SELECT Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo FROM Empleados WHERE EmpresaId = @EmpresaId";
+            string queryEmpleados = "SELECT Id, Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo FROM Empleados WHERE EmpresaId = @EmpresaId";
 
             using (SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Tss;Integrated Security=True"))
             {
@@ -214,11 +214,19 @@ namespace FerrAmeManager
                     using (SqlDataAdapter adapter = new SqlDataAdapter(queryEmpleados, con))
                     {
                         adapter.SelectCommand.Parameters.Add("@EmpresaId", SqlDbType.Int).Value = empresaId;
-
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
 
                         dataGridView1.DataSource = dt;
+
+                        // 2. Ocultar la columna ID y hacerla de solo lectura para evitar errores
+                        if (dataGridView1.Columns["Id"] != null)
+                        {
+                            dataGridView1.Columns["Id"].Visible = false;
+                        }
+
+                        // Opcional: Evitar que el usuario agregue filas 
+                        dataGridView1.AllowUserToAddRows = false; 
 
                         if (dt.Rows.Count == 0)
                         {
