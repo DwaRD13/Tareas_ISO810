@@ -63,9 +63,8 @@ namespace FerrAmeManager
 
                             decimal salVal = 0;
                             decimal.TryParse(row.Cells["Salario"].Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out salVal);
-                            // formato fijo con 2 decimales, punto como separador
                             string salStr = salVal.ToString("F2", CultureInfo.InvariantCulture);
-                            string salarioFijo = salStr.Length > 10 ? salStr.Substring(0, 10) : salStr.PadLeft(10, '0'); 
+                            string salarioFijo = salStr.Length > 10 ? salStr.Substring(0, 10) : salStr.PadLeft(10, '0');
 
                             string fechaIngFija = "01/01/2000";
                             if (row.Cells["FechaIngreso"].Value != null &&
@@ -81,7 +80,6 @@ namespace FerrAmeManager
                             cargoRaw = cargoRaw.Replace("\r", "").Replace("\n", "").Trim();
                             string cargoFijo = cargoRaw.Length > 40 ? cargoRaw.Substring(0, 40) : cargoRaw.PadRight(40, ' ');
 
-                            // Línea detalle: "D" + cedula(11) + salario(10) + fechaIngreso(10) + tipo(1) + cargo(40)
                             writer.WriteLine($"D{cedulaFija}{salarioFijo}{fechaIngFija}{tipoFijo}{cargoFijo}");
 
                             cantidadRegistros++;
@@ -100,6 +98,7 @@ namespace FerrAmeManager
             {
                 MessageBox.Show($"Error al generar archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
