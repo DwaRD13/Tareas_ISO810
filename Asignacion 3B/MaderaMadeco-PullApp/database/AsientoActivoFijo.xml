@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<asientoActivoFijo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" moneda="DOP" idTransaccion="1331">
+  <numeroAsiento>42</numeroAsiento>
+  <descripcionAsiento>Asiento de Cierre</descripcionAsiento>
+  <fechaAsiento>2026-02-13</fechaAsiento>
+  <movimientos>
+    <movimiento tipo="DB">
+      <cuentaContable>45000002</cuentaContable>
+      <monto>50000</monto>
+    </movimiento>
+    <movimiento tipo="CR">
+      <cuentaContable>24550003</cuentaContable>
+      <monto>60000</monto>
+    </movimiento>
+  </movimientos>
+</asientoActivoFijo>

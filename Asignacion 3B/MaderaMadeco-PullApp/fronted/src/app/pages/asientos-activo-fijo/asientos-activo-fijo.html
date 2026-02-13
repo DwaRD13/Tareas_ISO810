@@ -1,0 +1,160 @@
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto max-w-7xl px-4">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-primary mb-2">🪵 Maderera Madeco</h1>
+      <p class="text-base-content/70">Integración de Asientos de Activos Fijos vía XML</p>
+    </div>
+
+    @if (message()) {
+      <div
+        class="alert mb-6"
+        [ngClass]="{
+          'alert-success': messageType() === 'success',
+          'alert-error': messageType() === 'error',
+        }"
+      >
+        <span>{{ message() }}</span>
+      </div>
+    }
+
+    <div class="card bg-base-100 shadow-xl mb-6">
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Cargar XML de Asiento</h2>
+        <p class="text-base-content/70 mb-4">
+          El archivo debe tener la estructura de <span class="font-semibold">asientoActivoFijo</span>
+          con sus movimientos DB/CR.
+        </p>
+
+        <div class="form-control w-full max-w-md mb-4">
+          <input
+            type="file"
+            id="fileInput"
+            accept=".xml"
+            (change)="onFileSelected($event)"
+            [disabled]="loading()"
+            class="file-input file-input-bordered file-input-primary w-full"
+          />
+        </div>
+
+        <div class="card-actions">
+          <button
+            class="btn btn-primary"
+            (click)="subirArchivo()"
+            [disabled]="!selectedFile || loading()"
+          >
+            {{ loading() ? 'Procesando...' : 'Subir y Procesar XML' }}
+          </button>
+          <button class="btn btn-info" (click)="cargarMovimientos()" [disabled]="loading()">
+            Actualizar Lista
+          </button>
+          <button
+            class="btn btn-error"
+            (click)="limpiarRegistros()"
+            [disabled]="movimientos().length === 0 || loading()"
+          >
+            Limpiar Registros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (ultimoEncabezado()) {
+      <div class="card bg-base-100 shadow-xl mb-6">
+        <div class="card-body">
+          <h2 class="card-title text-xl">Último asiento cargado</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div><span class="font-semibold">ID Transacción:</span> {{ ultimoEncabezado()?.idTransaccion }}</div>
+            <div><span class="font-semibold">No. Asiento:</span> {{ ultimoEncabezado()?.numeroAsiento }}</div>
+            <div><span class="font-semibold">Fecha:</span> {{ ultimoEncabezado()?.fechaAsiento }}</div>
+            <div><span class="font-semibold">Moneda:</span> {{ ultimoEncabezado()?.moneda }}</div>
+            <div class="md:col-span-2 lg:col-span-2">
+              <span class="font-semibold">Descripción:</span> {{ ultimoEncabezado()?.descripcionAsiento }}
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (movimientos().length > 0) {
+      <div class="stats stats-vertical lg:stats-horizontal shadow mb-6 w-full">
+        <div class="stat">
+          <div class="stat-title">Movimientos</div>
+          <div class="stat-value text-primary">{{ resumen().totalRegistros }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Total Débitos (DB)</div>
+          <div class="stat-value text-secondary">{{ resumen().totalDebitos | currency }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Total Créditos (CR)</div>
+          <div class="stat-value text-accent">{{ resumen().totalCreditos | currency }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Estado</div>
+          <div class="stat-value" [ngClass]="resumen().balanceado ? 'text-success' : 'text-error'">
+            {{ resumen().balanceado ? 'Balanceado' : 'Desbalanceado' }}
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl">
+          Movimientos Registrados
+          <div class="badge badge-primary">{{ movimientos().length }}</div>
+        </h2>
+
+        @if (loading()) {
+          <div class="flex justify-center items-center py-12">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+          </div>
+        }
+
+        @if (!loading() && movimientos().length === 0) {
+          <div class="text-center py-12 text-base-content/70">
+            No hay movimientos registrados. Sube el archivo XML para comenzar.
+          </div>
+        }
+
+        @if (!loading() && movimientos().length > 0) {
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>ID Transacción</th>
+                  <th>No. Asiento</th>
+                  <th>Fecha</th>
+                  <th>Cuenta Contable</th>
+                  <th>Tipo</th>
+                  <th class="text-right">Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (movimiento of movimientos(); track movimiento.id) {
+                  <tr class="hover">
+                    <td class="font-mono">{{ movimiento.id_transaccion }}</td>
+                    <td>{{ movimiento.numero_asiento }}</td>
+                    <td>{{ movimiento.fecha_asiento | date: 'yyyy-MM-dd' }}</td>
+                    <td class="font-mono">{{ movimiento.cuenta_contable }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="
+                          movimiento.tipo_movimiento === 'DB' ? 'badge-secondary' : 'badge-accent'
+                        "
+                      >
+                        {{ movimiento.tipo_movimiento }}
+                      </span>
+                    </td>
+                    <td class="text-right font-mono">{{ movimiento.monto | currency }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
