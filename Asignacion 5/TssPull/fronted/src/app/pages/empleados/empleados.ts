@@ -34,23 +34,6 @@ export class EmpleadosComponent {
     });
   }
 
-  cargarDesdeFerrAme() {
-    this.loading.set(true);
-    this.empleadosService.cargarDesdeFerrAme().subscribe({
-      next: (response) => {
-        this.showMessage(response.message, 'success');
-        this.cargarEmpleados();
-      },
-      error: (error) => {
-        this.showMessage(
-          'Error al conectar con FerrAmeManager: ' + (error.error?.error || 'Error desconocido'),
-          'error',
-        );
-        this.loading.set(false);
-      },
-    });
-  }
-
   showMessage(message: string, type: string) {
     this.message.set(message);
     this.messageType.set(type);

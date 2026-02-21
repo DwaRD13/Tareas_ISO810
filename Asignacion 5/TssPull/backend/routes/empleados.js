@@ -1,15 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { connectDB, query } = require("../config/database");
-const axios = require("axios");
 
+// 3.04% para el SFS de la TSS en República Dominicana
 const PORCENTAJE_SEGURO = 0.0304;
 
-// URL de la API de FerrAmeManager (.NET)
-const FERR_AME_API_URL =
-  process.env.FERR_AME_API_URL || "http://localhost:5000/api/empleados";
-
-// Retorna todos los empleados guardados en la DB de TSS
+// Retorna todos los empleados guardados en la DB de TSS (Para tu Frontend web)
 router.get("/", async (req, res) => {
   try {
     await connectDB();
@@ -23,17 +19,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Consume la API .NET de FerrAmeManager, calcula descuentos y guarda en la DB de TSS
-router.post("/cargar-desde-ferreteria", async (req, res) => {
+// Recibe los empleados directamente desde tu Windows Form y los guarda en la DB
+router.post("/guardar-empleados", async (req, res) => {
   try {
-    // 1. Traer empleados desde la API .NET
-    const response = await axios.get(FERR_AME_API_URL);
-    const empleadosFerrAme = response.data;
+    // 1. Tomamos los datos que el Windows Form nos envía en el cuerpo de la petición
+    // Puede ser un solo empleado o un arreglo de empleados. Asumiremos un arreglo.
+    const empleadosForm = req.body;
 
-    if (!empleadosFerrAme || empleadosFerrAme.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "No hay empleados en FerrAmeManager.", registros: 0 });
+    if (!empleadosForm || empleadosForm.length === 0) {
+      return res.status(400).json({ message: "No se recibieron empleados desde el formulario.", registros: 0 });
     }
 
     await connectDB();
@@ -41,7 +35,7 @@ router.post("/cargar-desde-ferreteria", async (req, res) => {
     let insertados = 0;
     let omitidos = 0;
 
-    for (const emp of empleadosFerrAme) {
+    for (const emp of empleadosForm) {
       // Evitar duplicados por cédula
       const existe = await query(
         "SELECT COUNT(1) AS total FROM TSSEmpleados WHERE cedula = $1",
@@ -61,7 +55,7 @@ router.post("/cargar-desde-ferreteria", async (req, res) => {
          VALUES ($1, $2, $3, $4, $5, $6, GETDATE())`,
         [
           emp.cedula,
-          emp.cargo,   // cargo en FerrAme → nombre en TSS
+          emp.cargo,
           sueldo,
           descuentoSeguro,
           sueldoNeto,
@@ -78,17 +72,8 @@ router.post("/cargar-desde-ferreteria", async (req, res) => {
       omitidos,
     });
   } catch (error) {
-    console.error("Error cargando desde FerrAmeManager:", error);
-
-    if (error.code === "ECONNREFUSED") {
-      return res.status(503).json({
-        error:
-          "No se pudo conectar a la API de FerrAmeManager. Verificá que esté corriendo en " +
-          FERR_AME_API_URL,
-      });
-    }
-
-    res.status(500).json({ error: "Error al cargar empleados: " + error.message });
+    console.error("Error guardando desde Windows Form:", error);
+    res.status(500).json({ error: "Error al guardar empleados: " + error.message });
   }
 });
 
