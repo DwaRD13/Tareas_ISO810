@@ -16,13 +16,18 @@ namespace FerrAmeManager.API.Controllers
         }
 
         /// <summary>
-        /// Ejemplo: GET /api/empleados
+        /// Ejemplo: GET /api/empleados?rnc=130123456
         ///          GET /api/empleados?empresaId=1
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetEmpleados([FromQuery] int? empresaId)
+        public async Task<IActionResult> GetEmpleados([FromQuery] int? empresaId, [FromQuery] string? rnc)
         {
-            var empleados = await _db.GetEmpleadosAsync(empresaId);
+            if (!empresaId.HasValue && string.IsNullOrWhiteSpace(rnc))
+            {
+                return BadRequest(new { error = "ATENCIÓN: La API no recibió ni 'empresaId' ni 'rnc'. Verifica la URL de la petición." });
+            }
+
+            var empleados = await _db.GetEmpleadosAsync(empresaId, rnc);
             return Ok(empleados);
         }
 
@@ -39,6 +44,7 @@ namespace FerrAmeManager.API.Controllers
 
             return Ok(empleado);
         }
+
 
         /// <summary>
         /// Body ejemplo:
@@ -72,5 +78,6 @@ namespace FerrAmeManager.API.Controllers
                 return StatusCode(500, new { message = "Error interno: " + ex.Message });
             }
         }
+        
     }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { EmpleadosService } from '../../services/empleados.service';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 
@@ -9,7 +9,7 @@ import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
   styleUrl: './empleados.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmpleadosComponent {
+export class EmpleadosComponent implements OnInit {
   empleados = signal<any[]>([]);
   loading = signal(false);
   message = signal('');
@@ -24,7 +24,23 @@ export class EmpleadosComponent {
     this.loading.set(true);
     this.empleadosService.obtenerEmpleados().subscribe({
       next: (data) => {
-        this.empleados.set(data);
+        // 1. Calculamos los descuentos al recibir la data
+        const empleadosProcesados = data.map((emp: any) => {
+          const sueldoBruto = parseFloat(emp.sueldo) || 0;
+          
+          const descuento_seguro = sueldoBruto * 0.0304; // SFS: 3.04%
+          const descuento_afp = sueldoBruto * 0.0287;    // AFP: 2.87%
+          const sueldo_neto = sueldoBruto - descuento_seguro - descuento_afp;
+
+          return {
+            ...emp,
+            descuento_seguro,
+            descuento_afp,
+            sueldo_neto
+          };
+        });
+
+        this.empleados.set(empleadosProcesados);
         this.loading.set(false);
       },
       error: () => {
@@ -36,16 +52,20 @@ export class EmpleadosComponent {
 
   cargarDesdeFerrAme() {
     this.loading.set(true);
+    
     this.empleadosService.cargarDesdeFerrAme().subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.showMessage(response.message, 'success');
-        this.cargarEmpleados();
+        this.cargarEmpleados(); 
       },
       error: (error) => {
+        this.empleados.set([]); 
+        
         this.showMessage(
-          'Error al conectar con FerrAmeManager: ' + (error.error?.error || 'Error desconocido'),
-          'error',
+          error.error?.error || 'Error desconocido al conectar con FerrAmeManager',
+          'error'
         );
+        
         this.loading.set(false);
       },
     });
@@ -62,7 +82,12 @@ export class EmpleadosComponent {
   }
 
   calcularTotalDescuentos(): number {
-    return this.empleados().reduce((sum, emp) => sum + (parseFloat(emp.descuento_seguro) || 0), 0);
+    // 2. Sumamos ambos descuentos en el total
+    return this.empleados().reduce((sum, emp) => {
+      const seguro = parseFloat(emp.descuento_seguro) || 0;
+      const afp = parseFloat(emp.descuento_afp) || 0;
+      return sum + seguro + afp;
+    }, 0);
   }
 
   calcularTotalNeto(): number {

@@ -41,25 +41,39 @@ namespace FerrAmeManager.API.Data
 
         // --- EMPLEADOS ---
 
-        public async Task<List<Empleado>> GetEmpleadosAsync(int? empresaId = null)
+        public async Task<List<Empleado>> GetEmpleadosAsync(int? empresaId = null, string? rnc = null)
         {
             var empleados = new List<Empleado>();
 
             using var con = GetConnection();
             await con.OpenAsync();
 
-            var sql = @"SELECT Id, Cedula, Salario, FechaIngreso, TipoEmpleado, Cargo, EmpresaId
-                        FROM Empleados";
+            var sql = @"SELECT e.Id, e.Cedula, e.Salario, e.FechaIngreso, e.TipoEmpleado, e.Cargo, e.EmpresaId
+                        FROM Empleados e ";
 
-            if (empresaId.HasValue)
-                sql += " WHERE EmpresaId = @EmpresaId";
+            // Si llega el RNC, filtramos uniendo la tabla Empresas
+            if (!string.IsNullOrWhiteSpace(rnc))
+            {
+                sql += " INNER JOIN Empresas emp ON e.EmpresaId = emp.Id WHERE emp.RNC = @Rnc ";
+            }
+            // Si llega el EmpresaId, filtramos directamente
+            else if (empresaId.HasValue)
+            {
+                sql += " WHERE e.EmpresaId = @EmpresaId ";
+            }
 
-            sql += " ORDER BY Id DESC";
+            sql += " ORDER BY e.Id DESC";
 
             using var cmd = new SqlCommand(sql, con);
 
-            if (empresaId.HasValue)
+            if (!string.IsNullOrWhiteSpace(rnc))
+            {
+                cmd.Parameters.AddWithValue("@Rnc", rnc.Trim());
+            }
+            else if (empresaId.HasValue)
+            {
                 cmd.Parameters.AddWithValue("@EmpresaId", empresaId.Value);
+            }
 
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -67,13 +81,13 @@ namespace FerrAmeManager.API.Data
             {
                 empleados.Add(new Empleado
                 {
-                    Id           = reader.GetInt32(0),
-                    Cedula       = reader.GetString(1),
-                    Salario      = reader.GetDecimal(2),
+                    Id = reader.GetInt32(0),
+                    Cedula = reader.GetString(1),
+                    Salario = reader.GetDecimal(2),
                     FechaIngreso = reader.GetDateTime(3),
                     TipoEmpleado = reader.GetString(4),
-                    Cargo        = reader.GetString(5),
-                    EmpresaId    = reader.GetInt32(6)
+                    Cargo = reader.GetString(5),
+                    EmpresaId = reader.GetInt32(6)
                 });
             }
 
