@@ -104,7 +104,7 @@
             groupBox1.Controls.Add(lb_montoMontoTotal);
             groupBox1.Location = new Point(394, 187);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(225, 479);
+            groupBox1.Size = new Size(225, 494);
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
             groupBox1.Text = "Monto descompuesto";
