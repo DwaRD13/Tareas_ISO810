@@ -2,15 +2,8 @@
 {
     partial class Form1
     {
-        /// <summary>
-        ///  Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        ///  Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,418 +15,432 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            imageList1 = new ImageList(components);
-            pictureBox1 = new PictureBox();
-            panel1 = new Panel();
-            groupBox1 = new GroupBox();
-            lb_montoCantidadProductos = new Label();
-            lb_montoDescuentoSeguro = new Label();
-            lb_montoItbis = new Label();
-            lb_montoSubtotal = new Label();
-            lb_montoMontoTotal = new Label();
-            panel3 = new Panel();
-            btn_registrarFactura = new Button();
-            txtBox_ncf = new TextBox();
-            lb_ncf = new Label();
-            cb_formaPago = new ComboBox();
-            lb_formaPago = new Label();
-            txtBox_sucursal = new TextBox();
-            lb_sucursal = new Label();
-            txtBox_nombreVendedor = new TextBox();
-            lb_nombreVendedor = new Label();
-            txtbox_seguroMedico = new TextBox();
-            lb_ArsNombre = new Label();
-            btn_calcularMonto = new Button();
-            txtbox_subtotal = new TextBox();
-            lb_subtotal = new Label();
-            txtbox_productos = new TextBox();
-            lb_productos = new Label();
-            txtbox_carolealID = new TextBox();
-            lb_carolealId = new Label();
-            txtbox_idCliente = new TextBox();
-            lb_clienteID = new Label();
-            panel2 = new Panel();
-            tituloApp = new Label();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            panel1.SuspendLayout();
-            groupBox1.SuspendLayout();
-            panel3.SuspendLayout();
-            panel2.SuspendLayout();
-            SuspendLayout();
-            // 
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+
+            // --- NUEVOS CONTROLES PARA PAGO ---
+            this.groupBoxPago = new System.Windows.Forms.GroupBox();
+            this.lb_pagoFacturaId = new System.Windows.Forms.Label();
+            this.txtBox_pagoFacturaId = new System.Windows.Forms.TextBox();
+            this.lb_pagoMonto = new System.Windows.Forms.Label();
+            this.txtBox_pagoMonto = new System.Windows.Forms.TextBox();
+            this.btn_registrarPago = new System.Windows.Forms.Button();
+            // ----------------------------------
+
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lb_montoCantidadProductos = new System.Windows.Forms.Label();
+            this.lb_montoDescuentoSeguro = new System.Windows.Forms.Label();
+            this.lb_montoItbis = new System.Windows.Forms.Label();
+            this.lb_montoSubtotal = new System.Windows.Forms.Label();
+            this.lb_montoMontoTotal = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.btn_registrarFactura = new System.Windows.Forms.Button();
+            this.txtBox_ncf = new System.Windows.Forms.TextBox();
+            this.lb_ncf = new System.Windows.Forms.Label();
+            this.cb_formaPago = new System.Windows.Forms.ComboBox();
+            this.lb_formaPago = new System.Windows.Forms.Label();
+            this.txtBox_sucursal = new System.Windows.Forms.TextBox();
+            this.lb_sucursal = new System.Windows.Forms.Label();
+            this.txtBox_nombreVendedor = new System.Windows.Forms.TextBox();
+            this.lb_nombreVendedor = new System.Windows.Forms.Label();
+            this.txtbox_seguroMedico = new System.Windows.Forms.TextBox();
+            this.lb_ArsNombre = new System.Windows.Forms.Label();
+            this.btn_calcularMonto = new System.Windows.Forms.Button();
+            this.txtbox_subtotal = new System.Windows.Forms.TextBox();
+            this.lb_subtotal = new System.Windows.Forms.Label();
+            this.txtbox_productos = new System.Windows.Forms.TextBox();
+            this.lb_productos = new System.Windows.Forms.Label();
+            this.txtbox_carolealID = new System.Windows.Forms.TextBox();
+            this.lb_carolealId = new System.Windows.Forms.Label();
+            this.txtbox_idCliente = new System.Windows.Forms.TextBox();
+            this.lb_clienteID = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.tituloApp = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.groupBoxPago.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.SuspendLayout();
+
             // imageList1
-            // 
-            imageList1.ColorDepth = ColorDepth.Depth32Bit;
-            imageList1.ImageSize = new Size(16, 16);
-            imageList1.TransparentColor = Color.Transparent;
-            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+
             // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(138, 7);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(227, 99);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
-            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(138, 7);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(227, 99);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+
             // panel1
-            // 
-            panel1.Controls.Add(groupBox1);
-            panel1.Controls.Add(panel3);
-            panel1.Controls.Add(panel2);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(635, 710);
-            panel1.TabIndex = 1;
-            // 
+            this.panel1.Controls.Add(this.groupBoxPago); // Agregado el nuevo bloque
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Location = new System.Drawing.Point(12, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(635, 830); // Aumenté el tamaño
+            this.panel1.TabIndex = 1;
+
+            // --- SECCIÓN: NUEVO GROUPBOX PARA PAGOS ---
+            this.groupBoxPago.Controls.Add(this.btn_registrarPago);
+            this.groupBoxPago.Controls.Add(this.txtBox_pagoMonto);
+            this.groupBoxPago.Controls.Add(this.lb_pagoMonto);
+            this.groupBoxPago.Controls.Add(this.txtBox_pagoFacturaId);
+            this.groupBoxPago.Controls.Add(this.lb_pagoFacturaId);
+            this.groupBoxPago.Location = new System.Drawing.Point(14, 695);
+            this.groupBoxPago.Name = "groupBoxPago";
+            this.groupBoxPago.Size = new System.Drawing.Size(605, 100);
+            this.groupBoxPago.TabIndex = 4;
+            this.groupBoxPago.TabStop = false;
+            this.groupBoxPago.Text = "Procesar Pago de Cuentas por Cobrar";
+
+            this.lb_pagoFacturaId.AutoSize = true;
+            this.lb_pagoFacturaId.Location = new System.Drawing.Point(20, 45);
+            this.lb_pagoFacturaId.Name = "lb_pagoFacturaId";
+            this.lb_pagoFacturaId.Size = new System.Drawing.Size(66, 15);
+            this.lb_pagoFacturaId.Text = "ID Factura:";
+
+            this.txtBox_pagoFacturaId.Location = new System.Drawing.Point(90, 42);
+            this.txtBox_pagoFacturaId.Name = "txtBox_pagoFacturaId";
+            this.txtBox_pagoFacturaId.Size = new System.Drawing.Size(100, 23);
+
+            this.lb_pagoMonto.AutoSize = true;
+            this.lb_pagoMonto.Location = new System.Drawing.Point(210, 45);
+            this.lb_pagoMonto.Name = "lb_pagoMonto";
+            this.lb_pagoMonto.Size = new System.Drawing.Size(89, 15);
+            this.lb_pagoMonto.Text = "Monto a Pagar:";
+
+            this.txtBox_pagoMonto.Location = new System.Drawing.Point(305, 42);
+            this.txtBox_pagoMonto.Name = "txtBox_pagoMonto";
+            this.txtBox_pagoMonto.Size = new System.Drawing.Size(120, 23);
+
+            this.btn_registrarPago.BackColor = System.Drawing.Color.ForestGreen;
+            this.btn_registrarPago.ForeColor = System.Drawing.Color.White;
+            this.btn_registrarPago.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_registrarPago.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_registrarPago.Location = new System.Drawing.Point(445, 35);
+            this.btn_registrarPago.Name = "btn_registrarPago";
+            this.btn_registrarPago.Size = new System.Drawing.Size(140, 35);
+            this.btn_registrarPago.Text = "Procesar Pago";
+            this.btn_registrarPago.UseVisualStyleBackColor = false;
+            // ------------------------------------------
+
             // groupBox1
-            // 
-            groupBox1.Controls.Add(lb_montoCantidadProductos);
-            groupBox1.Controls.Add(lb_montoDescuentoSeguro);
-            groupBox1.Controls.Add(lb_montoItbis);
-            groupBox1.Controls.Add(lb_montoSubtotal);
-            groupBox1.Controls.Add(lb_montoMontoTotal);
-            groupBox1.Location = new Point(394, 187);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(225, 494);
-            groupBox1.TabIndex = 3;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Monto descompuesto";
-            groupBox1.Enter += groupBox1_Enter;
-            // 
+            this.groupBox1.Controls.Add(this.lb_montoCantidadProductos);
+            this.groupBox1.Controls.Add(this.lb_montoDescuentoSeguro);
+            this.groupBox1.Controls.Add(this.lb_montoItbis);
+            this.groupBox1.Controls.Add(this.lb_montoSubtotal);
+            this.groupBox1.Controls.Add(this.lb_montoMontoTotal);
+            this.groupBox1.Location = new System.Drawing.Point(394, 187);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(225, 494);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Monto descompuesto";
+
             // lb_montoCantidadProductos
-            // 
-            lb_montoCantidadProductos.AutoSize = true;
-            lb_montoCantidadProductos.Location = new Point(3, 161);
-            lb_montoCantidadProductos.Name = "lb_montoCantidadProductos";
-            lb_montoCantidadProductos.Size = new Size(115, 15);
-            lb_montoCantidadProductos.TabIndex = 4;
-            lb_montoCantidadProductos.Text = "Cantidad Productos:";
-            lb_montoCantidadProductos.Click += label6_Click;
-            // 
+            this.lb_montoCantidadProductos.AutoSize = true;
+            this.lb_montoCantidadProductos.Location = new System.Drawing.Point(3, 161);
+            this.lb_montoCantidadProductos.Name = "lb_montoCantidadProductos";
+            this.lb_montoCantidadProductos.Size = new System.Drawing.Size(115, 15);
+            this.lb_montoCantidadProductos.TabIndex = 4;
+            this.lb_montoCantidadProductos.Text = "Cantidad Productos:";
+
             // lb_montoDescuentoSeguro
-            // 
-            lb_montoDescuentoSeguro.AutoSize = true;
-            lb_montoDescuentoSeguro.Location = new Point(15, 92);
-            lb_montoDescuentoSeguro.Name = "lb_montoDescuentoSeguro";
-            lb_montoDescuentoSeguro.Size = new Size(106, 15);
-            lb_montoDescuentoSeguro.TabIndex = 3;
-            lb_montoDescuentoSeguro.Text = "Descuento Seguro:";
-            // 
+            this.lb_montoDescuentoSeguro.AutoSize = true;
+            this.lb_montoDescuentoSeguro.Location = new System.Drawing.Point(15, 92);
+            this.lb_montoDescuentoSeguro.Name = "lb_montoDescuentoSeguro";
+            this.lb_montoDescuentoSeguro.Size = new System.Drawing.Size(106, 15);
+            this.lb_montoDescuentoSeguro.TabIndex = 3;
+            this.lb_montoDescuentoSeguro.Text = "Descuento Seguro:";
+
             // lb_montoItbis
-            // 
-            lb_montoItbis.AutoSize = true;
-            lb_montoItbis.Location = new Point(87, 68);
-            lb_montoItbis.Name = "lb_montoItbis";
-            lb_montoItbis.Size = new Size(38, 15);
-            lb_montoItbis.TabIndex = 2;
-            lb_montoItbis.Text = "ITBIS: ";
-            // 
+            this.lb_montoItbis.AutoSize = true;
+            this.lb_montoItbis.Location = new System.Drawing.Point(87, 68);
+            this.lb_montoItbis.Name = "lb_montoItbis";
+            this.lb_montoItbis.Size = new System.Drawing.Size(38, 15);
+            this.lb_montoItbis.TabIndex = 2;
+            this.lb_montoItbis.Text = "ITBIS: ";
+
             // lb_montoSubtotal
-            // 
-            lb_montoSubtotal.AutoSize = true;
-            lb_montoSubtotal.Location = new Point(60, 43);
-            lb_montoSubtotal.Name = "lb_montoSubtotal";
-            lb_montoSubtotal.Size = new Size(65, 15);
-            lb_montoSubtotal.TabIndex = 1;
-            lb_montoSubtotal.Text = "SUBTOTAL: ";
-            lb_montoSubtotal.Click += label3_Click_3;
-            // 
+            this.lb_montoSubtotal.AutoSize = true;
+            this.lb_montoSubtotal.Location = new System.Drawing.Point(60, 43);
+            this.lb_montoSubtotal.Name = "lb_montoSubtotal";
+            this.lb_montoSubtotal.Size = new System.Drawing.Size(65, 15);
+            this.lb_montoSubtotal.TabIndex = 1;
+            this.lb_montoSubtotal.Text = "SUBTOTAL: ";
+
             // lb_montoMontoTotal
-            // 
-            lb_montoMontoTotal.AutoSize = true;
-            lb_montoMontoTotal.Location = new Point(44, 136);
-            lb_montoMontoTotal.Name = "lb_montoMontoTotal";
-            lb_montoMontoTotal.Size = new Size(77, 15);
-            lb_montoMontoTotal.TabIndex = 0;
-            lb_montoMontoTotal.Text = "Monto Total: ";
-            lb_montoMontoTotal.Click += label2_Click_5;
-            // 
+            this.lb_montoMontoTotal.AutoSize = true;
+            this.lb_montoMontoTotal.Location = new System.Drawing.Point(44, 136);
+            this.lb_montoMontoTotal.Name = "lb_montoMontoTotal";
+            this.lb_montoMontoTotal.Size = new System.Drawing.Size(77, 15);
+            this.lb_montoMontoTotal.TabIndex = 0;
+            this.lb_montoMontoTotal.Text = "Monto Total: ";
+
             // panel3
-            // 
-            panel3.Controls.Add(btn_registrarFactura);
-            panel3.Controls.Add(txtBox_ncf);
-            panel3.Controls.Add(lb_ncf);
-            panel3.Controls.Add(cb_formaPago);
-            panel3.Controls.Add(lb_formaPago);
-            panel3.Controls.Add(txtBox_sucursal);
-            panel3.Controls.Add(lb_sucursal);
-            panel3.Controls.Add(txtBox_nombreVendedor);
-            panel3.Controls.Add(lb_nombreVendedor);
-            panel3.Controls.Add(txtbox_seguroMedico);
-            panel3.Controls.Add(lb_ArsNombre);
-            panel3.Controls.Add(btn_calcularMonto);
-            panel3.Controls.Add(txtbox_subtotal);
-            panel3.Controls.Add(lb_subtotal);
-            panel3.Controls.Add(txtbox_productos);
-            panel3.Controls.Add(lb_productos);
-            panel3.Controls.Add(txtbox_carolealID);
-            panel3.Controls.Add(lb_carolealId);
-            panel3.Controls.Add(txtbox_idCliente);
-            panel3.Controls.Add(lb_clienteID);
-            panel3.Location = new Point(14, 187);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(374, 494);
-            panel3.TabIndex = 2;
-            panel3.Paint += panel3_Paint;
-            // 
+            this.panel3.Controls.Add(this.btn_registrarFactura);
+            this.panel3.Controls.Add(this.txtBox_ncf);
+            this.panel3.Controls.Add(this.lb_ncf);
+            this.panel3.Controls.Add(this.cb_formaPago);
+            this.panel3.Controls.Add(this.lb_formaPago);
+            this.panel3.Controls.Add(this.txtBox_sucursal);
+            this.panel3.Controls.Add(this.lb_sucursal);
+            this.panel3.Controls.Add(this.txtBox_nombreVendedor);
+            this.panel3.Controls.Add(this.lb_nombreVendedor);
+            this.panel3.Controls.Add(this.txtbox_seguroMedico);
+            this.panel3.Controls.Add(this.lb_ArsNombre);
+            this.panel3.Controls.Add(this.btn_calcularMonto);
+            this.panel3.Controls.Add(this.txtbox_subtotal);
+            this.panel3.Controls.Add(this.lb_subtotal);
+            this.panel3.Controls.Add(this.txtbox_productos);
+            this.panel3.Controls.Add(this.lb_productos);
+            this.panel3.Controls.Add(this.txtbox_carolealID);
+            this.panel3.Controls.Add(this.lb_carolealId);
+            this.panel3.Controls.Add(this.txtbox_idCliente);
+            this.panel3.Controls.Add(this.lb_clienteID);
+            this.panel3.Location = new System.Drawing.Point(14, 187);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(374, 494);
+            this.panel3.TabIndex = 2;
+
             // btn_registrarFactura
-            // 
-            btn_registrarFactura.BackColor = SystemColors.Highlight;
-            btn_registrarFactura.ForeColor = Color.Black;
-            btn_registrarFactura.Location = new Point(157, 432);
-            btn_registrarFactura.Name = "btn_registrarFactura";
-            btn_registrarFactura.Size = new Size(137, 40);
-            btn_registrarFactura.TabIndex = 19;
-            btn_registrarFactura.Text = "Registrar Factura";
-            btn_registrarFactura.UseVisualStyleBackColor = false;
-            // 
+            this.btn_registrarFactura.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btn_registrarFactura.ForeColor = System.Drawing.Color.Black;
+            this.btn_registrarFactura.Location = new System.Drawing.Point(157, 432);
+            this.btn_registrarFactura.Name = "btn_registrarFactura";
+            this.btn_registrarFactura.Size = new System.Drawing.Size(137, 40);
+            this.btn_registrarFactura.TabIndex = 19;
+            this.btn_registrarFactura.Text = "Registrar Factura";
+            this.btn_registrarFactura.UseVisualStyleBackColor = false;
+
             // txtBox_ncf
-            // 
-            txtBox_ncf.Location = new Point(96, 325);
-            txtBox_ncf.Name = "txtBox_ncf";
-            txtBox_ncf.Size = new Size(182, 23);
-            txtBox_ncf.TabIndex = 18;
-            // 
+            this.txtBox_ncf.Location = new System.Drawing.Point(96, 325);
+            this.txtBox_ncf.Name = "txtBox_ncf";
+            this.txtBox_ncf.Size = new System.Drawing.Size(182, 23);
+            this.txtBox_ncf.TabIndex = 18;
+
             // lb_ncf
-            // 
-            lb_ncf.AutoSize = true;
-            lb_ncf.Location = new Point(53, 328);
-            lb_ncf.Name = "lb_ncf";
-            lb_ncf.Size = new Size(30, 15);
-            lb_ncf.TabIndex = 17;
-            lb_ncf.Text = "NCF";
-            // 
+            this.lb_ncf.AutoSize = true;
+            this.lb_ncf.Location = new System.Drawing.Point(53, 328);
+            this.lb_ncf.Name = "lb_ncf";
+            this.lb_ncf.Size = new System.Drawing.Size(30, 15);
+            this.lb_ncf.TabIndex = 17;
+            this.lb_ncf.Text = "NCF";
+
             // cb_formaPago
-            // 
-            cb_formaPago.FormattingEnabled = true;
-            cb_formaPago.Items.AddRange(new object[] { "Crédito", "Contado" });
-            cb_formaPago.Location = new Point(96, 286);
-            cb_formaPago.Name = "cb_formaPago";
-            cb_formaPago.Size = new Size(182, 23);
-            cb_formaPago.TabIndex = 16;
-            cb_formaPago.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            // 
+            this.cb_formaPago.FormattingEnabled = true;
+            this.cb_formaPago.Items.AddRange(new object[] { "Crédito", "Contado" });
+            this.cb_formaPago.Location = new System.Drawing.Point(96, 286);
+            this.cb_formaPago.Name = "cb_formaPago";
+            this.cb_formaPago.Size = new System.Drawing.Size(182, 23);
+            this.cb_formaPago.TabIndex = 16;
+
             // lb_formaPago
-            // 
-            lb_formaPago.AutoSize = true;
-            lb_formaPago.Location = new Point(19, 289);
-            lb_formaPago.Name = "lb_formaPago";
-            lb_formaPago.Size = new Size(71, 15);
-            lb_formaPago.TabIndex = 15;
-            lb_formaPago.Text = "Forma Pago";
-            // 
+            this.lb_formaPago.AutoSize = true;
+            this.lb_formaPago.Location = new System.Drawing.Point(19, 289);
+            this.lb_formaPago.Name = "lb_formaPago";
+            this.lb_formaPago.Size = new System.Drawing.Size(71, 15);
+            this.lb_formaPago.TabIndex = 15;
+            this.lb_formaPago.Text = "Forma Pago";
+
             // txtBox_sucursal
-            // 
-            txtBox_sucursal.Location = new Point(96, 393);
-            txtBox_sucursal.Name = "txtBox_sucursal";
-            txtBox_sucursal.Size = new Size(182, 23);
-            txtBox_sucursal.TabIndex = 14;
-            txtBox_sucursal.TextChanged += textBox2_TextChanged_1;
-            // 
+            this.txtBox_sucursal.Location = new System.Drawing.Point(96, 393);
+            this.txtBox_sucursal.Name = "txtBox_sucursal";
+            this.txtBox_sucursal.Size = new System.Drawing.Size(182, 23);
+            this.txtBox_sucursal.TabIndex = 14;
+
             // lb_sucursal
-            // 
-            lb_sucursal.AutoSize = true;
-            lb_sucursal.Location = new Point(32, 396);
-            lb_sucursal.Name = "lb_sucursal";
-            lb_sucursal.Size = new Size(51, 15);
-            lb_sucursal.TabIndex = 13;
-            lb_sucursal.Text = "Sucursal";
-            // 
+            this.lb_sucursal.AutoSize = true;
+            this.lb_sucursal.Location = new System.Drawing.Point(32, 396);
+            this.lb_sucursal.Name = "lb_sucursal";
+            this.lb_sucursal.Size = new System.Drawing.Size(51, 15);
+            this.lb_sucursal.TabIndex = 13;
+            this.lb_sucursal.Text = "Sucursal";
+
             // txtBox_nombreVendedor
-            // 
-            txtBox_nombreVendedor.Location = new Point(96, 361);
-            txtBox_nombreVendedor.Name = "txtBox_nombreVendedor";
-            txtBox_nombreVendedor.Size = new Size(182, 23);
-            txtBox_nombreVendedor.TabIndex = 12;
-            txtBox_nombreVendedor.TextChanged += textBox1_TextChanged_3;
-            // 
+            this.txtBox_nombreVendedor.Location = new System.Drawing.Point(96, 361);
+            this.txtBox_nombreVendedor.Name = "txtBox_nombreVendedor";
+            this.txtBox_nombreVendedor.Size = new System.Drawing.Size(182, 23);
+            this.txtBox_nombreVendedor.TabIndex = 12;
+
             // lb_nombreVendedor
-            // 
-            lb_nombreVendedor.AutoSize = true;
-            lb_nombreVendedor.Location = new Point(13, 364);
-            lb_nombreVendedor.Name = "lb_nombreVendedor";
-            lb_nombreVendedor.Size = new Size(77, 15);
-            lb_nombreVendedor.TabIndex = 11;
-            lb_nombreVendedor.Text = "Atendido por";
-            // 
+            this.lb_nombreVendedor.AutoSize = true;
+            this.lb_nombreVendedor.Location = new System.Drawing.Point(13, 364);
+            this.lb_nombreVendedor.Name = "lb_nombreVendedor";
+            this.lb_nombreVendedor.Size = new System.Drawing.Size(77, 15);
+            this.lb_nombreVendedor.TabIndex = 11;
+            this.lb_nombreVendedor.Text = "Atendido por";
+
             // txtbox_seguroMedico
-            // 
-            txtbox_seguroMedico.Location = new Point(96, 209);
-            txtbox_seguroMedico.Name = "txtbox_seguroMedico";
-            txtbox_seguroMedico.Size = new Size(182, 23);
-            txtbox_seguroMedico.TabIndex = 10;
-            txtbox_seguroMedico.TextChanged += textBox1_TextChanged_2;
-            // 
+            this.txtbox_seguroMedico.Location = new System.Drawing.Point(96, 209);
+            this.txtbox_seguroMedico.Name = "txtbox_seguroMedico";
+            this.txtbox_seguroMedico.Size = new System.Drawing.Size(182, 23);
+            this.txtbox_seguroMedico.TabIndex = 10;
+
             // lb_ArsNombre
-            // 
-            lb_ArsNombre.AutoSize = true;
-            lb_ArsNombre.Location = new Point(3, 212);
-            lb_ArsNombre.Name = "lb_ArsNombre";
-            lb_ArsNombre.Size = new Size(87, 15);
-            lb_ArsNombre.TabIndex = 9;
-            lb_ArsNombre.Text = "Seguro Medico";
-            // 
+            this.lb_ArsNombre.AutoSize = true;
+            this.lb_ArsNombre.Location = new System.Drawing.Point(3, 212);
+            this.lb_ArsNombre.Name = "lb_ArsNombre";
+            this.lb_ArsNombre.Size = new System.Drawing.Size(87, 15);
+            this.lb_ArsNombre.TabIndex = 9;
+            this.lb_ArsNombre.Text = "Seguro Medico";
+
             // btn_calcularMonto
-            // 
-            btn_calcularMonto.Location = new Point(280, 243);
-            btn_calcularMonto.Name = "btn_calcularMonto";
-            btn_calcularMonto.Size = new Size(76, 23);
-            btn_calcularMonto.TabIndex = 8;
-            btn_calcularMonto.Text = "Calcular";
-            btn_calcularMonto.UseVisualStyleBackColor = true;
-            // 
+            this.btn_calcularMonto.Location = new System.Drawing.Point(280, 243);
+            this.btn_calcularMonto.Name = "btn_calcularMonto";
+            this.btn_calcularMonto.Size = new System.Drawing.Size(76, 23);
+            this.btn_calcularMonto.TabIndex = 8;
+            this.btn_calcularMonto.Text = "Calcular";
+            this.btn_calcularMonto.UseVisualStyleBackColor = true;
+
             // txtbox_subtotal
-            // 
-            txtbox_subtotal.Location = new Point(96, 244);
-            txtbox_subtotal.Name = "txtbox_subtotal";
-            txtbox_subtotal.Size = new Size(182, 23);
-            txtbox_subtotal.TabIndex = 7;
-            txtbox_subtotal.TextChanged += textBox1_TextChanged_1;
-            // 
+            this.txtbox_subtotal.Location = new System.Drawing.Point(96, 244);
+            this.txtbox_subtotal.Name = "txtbox_subtotal";
+            this.txtbox_subtotal.Size = new System.Drawing.Size(182, 23);
+            this.txtbox_subtotal.TabIndex = 7;
+
             // lb_subtotal
-            // 
-            lb_subtotal.AutoSize = true;
-            lb_subtotal.Location = new Point(39, 247);
-            lb_subtotal.Name = "lb_subtotal";
-            lb_subtotal.Size = new Size(51, 15);
-            lb_subtotal.TabIndex = 6;
-            lb_subtotal.Text = "Subtotal";
-            // 
+            this.lb_subtotal.AutoSize = true;
+            this.lb_subtotal.Location = new System.Drawing.Point(39, 247);
+            this.lb_subtotal.Name = "lb_subtotal";
+            this.lb_subtotal.Size = new System.Drawing.Size(51, 15);
+            this.lb_subtotal.TabIndex = 6;
+            this.lb_subtotal.Text = "Subtotal";
+
             // txtbox_productos
-            // 
-            txtbox_productos.Location = new Point(96, 106);
-            txtbox_productos.Multiline = true;
-            txtbox_productos.Name = "txtbox_productos";
-            txtbox_productos.Size = new Size(182, 92);
-            txtbox_productos.TabIndex = 5;
-            txtbox_productos.TextChanged += textBox2_TextChanged;
-            // 
+            this.txtbox_productos.Location = new System.Drawing.Point(96, 106);
+            this.txtbox_productos.Multiline = true;
+            this.txtbox_productos.Name = "txtbox_productos";
+            this.txtbox_productos.Size = new System.Drawing.Size(182, 92);
+            this.txtbox_productos.TabIndex = 5;
+
             // lb_productos
-            // 
-            lb_productos.AutoSize = true;
-            lb_productos.Location = new Point(29, 106);
-            lb_productos.Name = "lb_productos";
-            lb_productos.Size = new Size(61, 15);
-            lb_productos.TabIndex = 4;
-            lb_productos.Text = "Productos";
-            // 
+            this.lb_productos.AutoSize = true;
+            this.lb_productos.Location = new System.Drawing.Point(29, 106);
+            this.lb_productos.Name = "lb_productos";
+            this.lb_productos.Size = new System.Drawing.Size(61, 15);
+            this.lb_productos.TabIndex = 4;
+            this.lb_productos.Text = "Productos";
+
             // txtbox_carolealID
-            // 
-            txtbox_carolealID.Location = new Point(96, 61);
-            txtbox_carolealID.Name = "txtbox_carolealID";
-            txtbox_carolealID.Size = new Size(182, 23);
-            txtbox_carolealID.TabIndex = 3;
-            // 
+            this.txtbox_carolealID.Location = new System.Drawing.Point(96, 61);
+            this.txtbox_carolealID.Name = "txtbox_carolealID";
+            this.txtbox_carolealID.Size = new System.Drawing.Size(182, 23);
+            this.txtbox_carolealID.TabIndex = 3;
+
             // lb_carolealId
-            // 
-            lb_carolealId.AutoSize = true;
-            lb_carolealId.Location = new Point(26, 64);
-            lb_carolealId.Name = "lb_carolealId";
-            lb_carolealId.Size = new Size(64, 15);
-            lb_carolealId.TabIndex = 2;
-            lb_carolealId.Text = "Caroleal ID";
-            // 
+            this.lb_carolealId.AutoSize = true;
+            this.lb_carolealId.Location = new System.Drawing.Point(26, 64);
+            this.lb_carolealId.Name = "lb_carolealId";
+            this.lb_carolealId.Size = new System.Drawing.Size(64, 15);
+            this.lb_carolealId.TabIndex = 2;
+            this.lb_carolealId.Text = "Caroleal ID";
+
             // txtbox_idCliente
-            // 
-            txtbox_idCliente.Location = new Point(96, 18);
-            txtbox_idCliente.Name = "txtbox_idCliente";
-            txtbox_idCliente.Size = new Size(182, 23);
-            txtbox_idCliente.TabIndex = 1;
-            // 
+            this.txtbox_idCliente.Location = new System.Drawing.Point(96, 18);
+            this.txtbox_idCliente.Name = "txtbox_idCliente";
+            this.txtbox_idCliente.Size = new System.Drawing.Size(182, 23);
+            this.txtbox_idCliente.TabIndex = 1;
+
             // lb_clienteID
-            // 
-            lb_clienteID.AutoSize = true;
-            lb_clienteID.Location = new Point(32, 21);
-            lb_clienteID.Name = "lb_clienteID";
-            lb_clienteID.Size = new Size(58, 15);
-            lb_clienteID.TabIndex = 0;
-            lb_clienteID.Text = "ID Cliente";
-            lb_clienteID.Click += label2_Click;
-            // 
+            this.lb_clienteID.AutoSize = true;
+            this.lb_clienteID.Location = new System.Drawing.Point(32, 21);
+            this.lb_clienteID.Name = "lb_clienteID";
+            this.lb_clienteID.Size = new System.Drawing.Size(58, 15);
+            this.lb_clienteID.TabIndex = 0;
+            this.lb_clienteID.Text = "ID Cliente";
+
             // panel2
-            // 
-            panel2.Controls.Add(tituloApp);
-            panel2.Controls.Add(pictureBox1);
-            panel2.Location = new Point(76, 15);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(487, 142);
-            panel2.TabIndex = 1;
-            panel2.Paint += panel2_Paint;
-            // 
+            this.panel2.Controls.Add(this.tituloApp);
+            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Location = new System.Drawing.Point(76, 15);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(487, 142);
+            this.panel2.TabIndex = 1;
+
             // tituloApp
-            // 
-            tituloApp.AutoSize = true;
-            tituloApp.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            tituloApp.Location = new Point(191, 109);
-            tituloApp.Name = "tituloApp";
-            tituloApp.Size = new Size(115, 25);
-            tituloApp.TabIndex = 1;
-            tituloApp.Text = "Facturación";
-            tituloApp.Click += label1_Click;
-            // 
+            this.tituloApp.AutoSize = true;
+            this.tituloApp.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tituloApp.Location = new System.Drawing.Point(191, 109);
+            this.tituloApp.Name = "tituloApp";
+            this.tituloApp.Size = new System.Drawing.Size(115, 25);
+            this.tituloApp.TabIndex = 1;
+            this.tituloApp.Text = "Facturación";
+
             // Form1
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.Window;
-            ClientSize = new Size(659, 734);
-            Controls.Add(panel1);
-            Name = "Form1";
-            Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            panel1.ResumeLayout(false);
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
+            this.ClientSize = new System.Drawing.Size(659, 854); // Aumenté la altura de la ventana
+            this.Controls.Add(this.panel1);
+            this.Name = "Form1";
+            this.Text = "Formulario de Facturación y Pagos";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.groupBoxPago.ResumeLayout(false);
+            this.groupBoxPago.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.ResumeLayout(false);
         }
 
         #endregion
 
-        private ImageList imageList1;
-        private PictureBox pictureBox1;
-        private Panel panel1;
-        private Panel panel2;
-        private Label tituloApp;
-        private Panel panel3;
-        private Label lb_clienteID;
-        private TextBox txtbox_carolealID;
-        private Label lb_carolealId;
-        private TextBox txtbox_idCliente;
-        private GroupBox groupBox1;
-        private TextBox txtbox_productos;
-        private Label lb_productos;
-        private TextBox txtbox_subtotal;
-        private Label lb_subtotal;
-        private TextBox txtbox_seguroMedico;
-        private Label lb_ArsNombre;
-        private Button btn_calcularMonto;
-        private TextBox txtBox_nombreVendedor;
-        private Label lb_nombreVendedor;
-        private TextBox txtBox_sucursal;
-        private Label lb_sucursal;
-        private ComboBox cb_formaPago;
-        private Label lb_formaPago;
-        private TextBox txtBox_ncf;
-        private Label lb_ncf;
-        private Button btn_registrarFactura;
-        private Label lb_montoMontoTotal;
-        private Label lb_montoSubtotal;
-        private Label lb_montoCantidadProductos;
-        private Label lb_montoDescuentoSeguro;
-        private Label lb_montoItbis;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label tituloApp;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label lb_clienteID;
+        private System.Windows.Forms.TextBox txtbox_carolealID;
+        private System.Windows.Forms.Label lb_carolealId;
+        private System.Windows.Forms.TextBox txtbox_idCliente;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox txtbox_productos;
+        private System.Windows.Forms.Label lb_productos;
+        private System.Windows.Forms.TextBox txtbox_subtotal;
+        private System.Windows.Forms.Label lb_subtotal;
+        private System.Windows.Forms.TextBox txtbox_seguroMedico;
+        private System.Windows.Forms.Label lb_ArsNombre;
+        private System.Windows.Forms.Button btn_calcularMonto;
+        private System.Windows.Forms.TextBox txtBox_nombreVendedor;
+        private System.Windows.Forms.Label lb_nombreVendedor;
+        private System.Windows.Forms.TextBox txtBox_sucursal;
+        private System.Windows.Forms.Label lb_sucursal;
+        private System.Windows.Forms.ComboBox cb_formaPago;
+        private System.Windows.Forms.Label lb_formaPago;
+        private System.Windows.Forms.TextBox txtBox_ncf;
+        private System.Windows.Forms.Label lb_ncf;
+        private System.Windows.Forms.Button btn_registrarFactura;
+        private System.Windows.Forms.Label lb_montoMontoTotal;
+        private System.Windows.Forms.Label lb_montoSubtotal;
+        private System.Windows.Forms.Label lb_montoCantidadProductos;
+        private System.Windows.Forms.Label lb_montoDescuentoSeguro;
+        private System.Windows.Forms.Label lb_montoItbis;
+
+        private System.Windows.Forms.GroupBox groupBoxPago;
+        private System.Windows.Forms.Label lb_pagoFacturaId;
+        private System.Windows.Forms.TextBox txtBox_pagoFacturaId;
+        private System.Windows.Forms.Label lb_pagoMonto;
+        private System.Windows.Forms.TextBox txtBox_pagoMonto;
+        private System.Windows.Forms.Button btn_registrarPago;
     }
 }
