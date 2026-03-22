@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FluentFTP;
 
-namespace ftp_conector
+namespace IntegracionSIB
 {
-    public class FtpEncryptedConsoleApp
+    public class InformeDiarioSIBApp
     {
         private const string DIVIDER = "============================================================";
         private const string SUBDIVIDER = "------------------------------------------------------------";
@@ -15,7 +15,7 @@ namespace ftp_conector
         public static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            PrintHeader("FTP Encrypted Console");
+            PrintHeader("Proceso Automatizado: Banco América -> SIB");
 
             while (true)
             {
@@ -27,7 +27,7 @@ namespace ftp_conector
                     switch (opcion.Trim())
                     {
                         case "1":
-                            EnviarArchivo();
+                            EnviarInformeDiario();
                             EsperarEnterYLimpiar();
                             break;
                         case "2":
@@ -58,36 +58,38 @@ namespace ftp_conector
         {
             Console.WriteLine();
             Console.WriteLine(DIVIDER);
-            Console.WriteLine(" MENU PRINCIPAL");
+            Console.WriteLine(" MENU DE SIMULACION (SIB)");
             Console.WriteLine(SUBDIVIDER);
-            Console.WriteLine("  1) Enviar archivo encriptado por FTP");
-            Console.WriteLine("  2) Recibir, desencriptar y guardar TXT");
-            Console.WriteLine("  3) Ver TXT local");
+            Console.WriteLine("  1) Ejecutar envío de Informe Diario (Banco América)");
+            Console.WriteLine("  2) Simular recepción SIB (Descargar y Desencriptar)");
+            Console.WriteLine("  3) Ver Informe TXT local");
             Console.WriteLine("  4) Salir");
             Console.WriteLine(DIVIDER);
         }
 
-        private static void EnviarArchivo()
+        private static void EnviarInformeDiario()
         {
-            PrintHeader("Enviar Archivo");
-            string origen = LeerConDefault("Fuente [1=demo, 2=archivo local]", "1");
+            PrintHeader("Enviar Informe Diario a SIB");
+            string origen = LeerConDefault("Fuente [1=Datos Banco Generados, 2=Archivo local]", "1");
 
             string txtContent;
             if (origen.Trim() == "2")
             {
-                string localPath = LeerConDefault("Ruta del TXT local", "nomina.txt");
+                string localPath = LeerConDefault("Ruta del TXT local", "informe_diario.txt");
                 txtContent = File.ReadAllText(localPath, Encoding.UTF8);
             }
             else
             {
+                string fechaHoy = DateTime.Now.ToString("yyyy-MM-dd");
                 txtContent = string.Join("\n",
-                    "001|402-0000000-1|Juan Perez|1500.0|Humano",
-                    "002|001-0000000-2|Ana Gomez|2200.5|Humano",
-                    "003|031-0000000-3|Luis Marte|1800.75|Humano"
+                    $"005|{fechaHoy}|CUENTA_AHORRO|40291055|15000.50|BAJO",
+                    $"005|{fechaHoy}|PRESTAMO_HIPO|90211322|4500000.00|MEDIO",
+                    $"005|{fechaHoy}|CUENTA_CORRIE|55029144|2300.00|BAJO",
+                    $"005|{fechaHoy}|TARJETA_CREDI|45098811|150000.00|ALTO"
                 );
             }
 
-            string defaultBaseName = $"NOMINA_UNIPAGO_{DateTime.Now:yyyy-MM-dd}.enc";
+            string defaultBaseName = $"INFORME_DIARIO_BA_SIB_{DateTime.Now:yyyy-MM-dd}.enc";
             string fileNameBase = LeerConDefault("Nombre base remoto", defaultBaseName);
 
             string passphrase = ObtenerPassphrase();
@@ -106,8 +108,8 @@ namespace ftp_conector
                     throw new InvalidOperationException($"No se pudo subir el manifest. Estado: {manifestStatus}");
                 }
 
-                PrintInfo("Enviado OK");
-                PrintKeyValue("Partes", partFiles.Count.ToString());
+                PrintInfo("Informe Diario Enviado OK a la SIB");
+                PrintKeyValue("Partes subidas", partFiles.Count.ToString());
                 PrintKeyValue("Manifest", manifestName);
             }
             finally
@@ -118,11 +120,11 @@ namespace ftp_conector
 
         private static void RecibirYDesencriptar()
         {
-            PrintHeader("Recibir y Desencriptar");
-            string manifestRemote = LeerConDefault("Manifest remoto", $"NOMINA_UNIPAGO_{DateTime.Now:yyyy-MM-dd}.enc.manifest.json");
+            PrintHeader("Recibir y Desencriptar (Lado SIB)");
+            string manifestRemote = LeerConDefault("Manifest remoto", $"INFORME_DIARIO_BA_SIB_{DateTime.Now:yyyy-MM-dd}.enc.manifest.json");
             string rutaRaiz = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\received"));
             string downloadDirText = LeerConDefault("Directorio local de descarga", rutaRaiz);
-            string outputFileName = LeerConDefault("Nombre del TXT de salida", "nomina_recibida.txt");
+            string outputFileName = LeerConDefault("Nombre del TXT de salida", "informe_recibido_sib.txt");
 
             Directory.CreateDirectory(downloadDirText);
 
@@ -160,21 +162,21 @@ namespace ftp_conector
             string outputPath = Path.Combine(downloadDirText, outputFileName);
             File.WriteAllText(outputPath, txt, Encoding.UTF8);
 
-            PrintInfo("TXT recuperado");
+            PrintInfo("TXT recuperado exitosamente");
             PrintKeyValue("Ruta", Path.GetFullPath(outputPath));
-            PrintHeader("Contenido");
+            PrintHeader("Contenido del Informe");
             MostrarContenidoFormateado(txt);
         }
 
         private static void VerArchivoLocal()
         {
-            PrintHeader("Ver TXT Local");
-            string rutaRaizArchivo = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\received\nomina_recibida.txt"));
+            PrintHeader("Ver Informe TXT Local");
+            string rutaRaizArchivo = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\received\informe_recibido_sib.txt"));
             string pathText = LeerConDefault("Ruta del TXT", rutaRaizArchivo);
             string content = File.ReadAllText(pathText, Encoding.UTF8);
 
             PrintKeyValue("Archivo", Path.GetFullPath(pathText));
-            PrintHeader("Contenido");
+            PrintHeader("Contenido del Informe");
             MostrarContenidoFormateado(content);
         }
 
@@ -314,8 +316,8 @@ namespace ftp_conector
                 return envPassphrase.Trim();
             }
 
-            string devFallback = "dev-local-only-change-this-passphrase-2026";
-            PrintInfo("[WARN] FILE_ENCRYPTION_PASSPHRASE no definida. Usando clave de desarrollo temporal.");
+            string devFallback = "banco-america-sib-secure-key-2026";
+            PrintInfo("[WARN] FILE_ENCRYPTION_PASSPHRASE no definida. Usando clave por defecto.");
             return devFallback;
         }
 
@@ -346,7 +348,7 @@ namespace ftp_conector
                 return;
             }
 
-            bool formatoNomina = true;
+            bool formatoValido = true;
             List<string[]> parsed = new List<string[]>();
 
             foreach (string row in rows)
@@ -354,15 +356,15 @@ namespace ftp_conector
                 if (string.IsNullOrWhiteSpace(row)) continue;
 
                 string[] parts = row.Split('|');
-                if (parts.Length != 5)
+                if (parts.Length != 6)
                 {
-                    formatoNomina = false;
+                    formatoValido = false;
                     break;
                 }
                 parsed.Add(parts);
             }
 
-            if (!formatoNomina || parsed.Count == 0)
+            if (!formatoValido || parsed.Count == 0)
             {
                 Console.WriteLine(SUBDIVIDER);
                 foreach (string row in rows)
@@ -376,15 +378,15 @@ namespace ftp_conector
                 return;
             }
 
-            Console.WriteLine("+------+---------------+----------------------+----------+----------+");
-            Console.WriteLine("| ID   | CEDULA        | NOMBRE               | MONTO    | ARS      |");
-            Console.WriteLine("+------+---------------+----------------------+----------+----------+");
+            Console.WriteLine("+------+------------+---------------+----------+------------+--------+");
+            Console.WriteLine("| BCO  | FECHA      | PRODUCTO      | CUENTA   | BALANCE    | RIESGO |");
+            Console.WriteLine("+------+------------+---------------+----------+------------+--------+");
 
             foreach (string[] parts in parsed)
             {
-                Console.WriteLine($"| {parts[0],-4} | {parts[1],-13} | {parts[2],-20} | {parts[3],8} | {parts[4],-8} |");
+                Console.WriteLine($"| {parts[0],-4} | {parts[1],-10} | {parts[2],-13} | {parts[3],-8} | {parts[4],10} | {parts[5],-6} |");
             }
-            Console.WriteLine("+------+---------------+----------------------+----------+----------+");
+            Console.WriteLine("+------+------------+---------------+----------+------------+--------+");
         }
 
         private static void PrintHeader(string title)
