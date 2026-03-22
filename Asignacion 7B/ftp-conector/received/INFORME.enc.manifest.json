@@ -2,9 +2,9 @@
   "version": 1,
   "chunkSizeBytes": 512,
   "totalChunks": 1,
-  "totalEncryptedBytes": 128,
+  "totalEncryptedBytes": 210,
   "algorithm": "AES-256-GCM",
   "files": [
-    "NOMINA.enc.part001"
+    "INFORME.enc.part001"
   ]
 }
