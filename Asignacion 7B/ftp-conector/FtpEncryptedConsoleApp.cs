@@ -80,7 +80,6 @@ namespace IntegracionSIB
             }
             else
             {
-                // Estructura: ID_BANCO | FECHA | PRODUCTO | CUENTA | BALANCE | RIESGO
                 string fechaHoy = DateTime.Now.ToString("yyyy-MM-dd");
                 txtContent = string.Join("\n",
                     $"005|{fechaHoy}|CUENTA_AHORRO|40291055|15000.50|BAJO",
