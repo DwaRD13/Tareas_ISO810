@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace FacturacionFarmCarol
 {
@@ -18,6 +19,7 @@ namespace FacturacionFarmCarol
             AplicarMejorasUI();
             btn_calcularMonto.Click += btn_calcularMonto_Click;
             btn_registrarFactura.Click += btn_registrarFactura_Click;
+            btn_registrarPago.Click += btn_registrarPago_Click;
         }
         private void AplicarMejorasUI()
         {
@@ -176,6 +178,70 @@ namespace FacturacionFarmCarol
             catch (Exception ex)
             {
                 MessageBox.Show("Error de Base de Datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void btn_registrarPago_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtBox_pagoFacturaId.Text, out int idFactura))
+            {
+                MessageBox.Show("Por favor, ingrese un ID de factura válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(txtBox_pagoMonto.Text, out decimal montoAbonado) || montoAbonado <= 0)
+            {
+                MessageBox.Show("Por favor, ingrese un monto a pagar mayor a cero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            ProcesarPagoDeCuenta(idFactura, montoAbonado);
+
+            txtBox_pagoFacturaId.Clear();
+            txtBox_pagoMonto.Clear();
+        }
+
+        public void ProcesarPagoDeCuenta(int idFactura, decimal montoAbonado)
+        {
+            if (montoAbonado <= 0)
+            {
+                MessageBox.Show("El monto a pagar debe ser mayor a cero.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string insertPagoQuery = @"INSERT INTO dbo.Pago (FacturaId, Monto, FechaPago) 
+                                       VALUES (@FacturaId, @Monto, GETDATE());
+                                       SELECT SCOPE_IDENTITY();";
+
+                    int nuevoPagoId = 0;
+                    using (SqlCommand cmdPago = new SqlCommand(insertPagoQuery, conn))
+                    {
+                        cmdPago.Parameters.AddWithValue("@FacturaId", idFactura);
+                        cmdPago.Parameters.AddWithValue("@Monto", montoAbonado);
+                        nuevoPagoId = Convert.ToInt32(cmdPago.ExecuteScalar());
+                    }
+                    using (SqlCommand cmdSp = new SqlCommand("dbo.sp_CxC_AplicarPago", conn))
+                    {
+                        cmdSp.CommandType = CommandType.StoredProcedure;
+                        cmdSp.Parameters.AddWithValue("@PagoId", nuevoPagoId);
+                        cmdSp.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("Pago registrado correctamente. El saldo en Cuentas por Cobrar se ha actualizado.", "Pago Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                MessageBox.Show("Error de Base de Datos al procesar el pago: " + sqlEx.Message, "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
